@@ -25,4 +25,4 @@ def parse_mnist_data(csv_file_path = './data/train.csv', width=28, height=28):
             labels.append(data_row[0])
     
     # Optionally convert the list to a NumPy array
-    return [np.array(images), np.array(labels)]
+    return [np.array(images), np.array(labels).astype(int)]
