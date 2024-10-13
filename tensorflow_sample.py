@@ -56,19 +56,16 @@ labels = np.array(labels)
 
 model = define_model()
 
-kfold = KFold(5, shuffle=True, random_state=1)
 
 # one hot encode target values
 labels = to_categorical(labels)
 
-# enumerate splits
-for train_ix, test_ix in kfold.split(images):
-	# define model
-	model = define_model()
-	# select rows for train and test
-	trainX, trainY, testX, testY = images[train_ix], labels[train_ix], images[test_ix], labels[test_ix]
-	# fit model
-	history = model.fit(trainX, trainY, epochs=10, batch_size=32, validation_data=(testX, testY), verbose=0)
-	_, acc = model.evaluate(testX, testY, verbose=0)
-	print('> %.3f' % (acc * 100.0))
+# define model
+model = define_model()
+# split labelled data into test and train data
+X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.1, random_state=42)
 
+# fit model
+history = model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_test, y_test), verbose=0)
+_, acc = model.evaluate(X_test, y_test, verbose=0)
+print('> %.3f' % (acc * 100.0))
