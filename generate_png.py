@@ -1,13 +1,9 @@
 import cv2
-
 from PIL import Image
-
 import data_parser as parser
-
 
 # generate training images
 (images, labels) = parser.parse_mnist_training_data()
-print(images[0].shape)
 
 for idx, image in enumerate(images, start=1):
 	# Create a PIL Image from the array
@@ -15,7 +11,6 @@ for idx, image in enumerate(images, start=1):
 
 # generate test images
 (images, labels) = parser.parse_mnist_test_data()
-print(images[0].shape)
 
 for idx, image in enumerate(images, start=1):
 	# Create a PIL Image from the array
