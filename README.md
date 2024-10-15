@@ -11,4 +11,3 @@
 
 	1. Run `download_mnist.sh` (or `.ps1`) to get the input data
 	2. Run `<python> train_cnn.py` to train cnn and run an inference
-	1
