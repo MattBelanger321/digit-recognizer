@@ -80,6 +80,8 @@ def train_model():
 
 model = train_model() # train the model
 
+model.encode()
+
 # run it against an unlabelled sample
 (raw_kaggle_test, labels) = parser.parse_mnist_test_data()
 kaggle_test = normalize_images(raw_kaggle_test)	# [0,1]
