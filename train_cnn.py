@@ -79,11 +79,6 @@ def train_model():
 # Call the function to train the model
 model,X_train, X_test, y_train, y_test = train_model()
 
-# Define function to save training history
-def save_training_history(history, filename='training_history.csv'):
-    df = pd.DataFrame(history.history)
-    df.to_csv(filename, index=False)
-
 # Train the model and save history
 history = model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_test, y_test), verbose=0)
 
