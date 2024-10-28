@@ -8,7 +8,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
 from tensorflow.keras.optimizers import SGD
-
+import pandas as pd
 
 # Define CNN model
 def define_model():
@@ -40,6 +40,12 @@ def interpret_one_hot(one_hot, delta):
             return index  # Return the index of the first element found
     return -1  # Return -1 if no such element is found
 
+# Save training history for MATLAB
+def save_training_history(history, filename='training_history.csv'):
+    df = pd.DataFrame(history.history)
+    df.to_csv(filename, index=False)
+
+# Train the model
 def train_model():
     # Load data from parser
     (images_raw, labels) = parser.parse_mnist_training_data()
@@ -59,14 +65,18 @@ def train_model():
     # Split labeled data into test and train data
     X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.1, random_state=42)
 
-    # Fit model
+    # Fit model and save history
     history = model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_test, y_test), verbose=0)
+    
+    # Save the training history to a CSV file
+    save_training_history(history)
+    
     _, acc = model.evaluate(X_test, y_test, verbose=0)
     print('> %.3f' % (acc * 100.0))
 
     return model
 
-# Train the model
+# Call the function to train the model
 model = train_model()
 
 # Run it against an unlabeled sample
