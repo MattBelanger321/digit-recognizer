@@ -24,27 +24,6 @@ def define_model():
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-# Normalize 0-1 a single image
-def normalize(image, scale=255.0):
-    # Convert from integers to floats and normalize to range 0-1
-    return image.astype('float32') / scale
-
-# Normalize the entire training data
-def normalize_images(images_raw):
-    return images_raw.astype('float32') / 255.0
-
-# Function to interpret the one-hot encoded output
-def interpret_one_hot(one_hot, delta):
-    for index, value in enumerate(one_hot):
-        if abs(value - 1) < delta:
-            return index  # Return the index of the first element found
-    return -1  # Return -1 if no such element is found
-
-# Save training history for MATLAB
-def save_training_history(history, filename='training_history.csv'):
-    df = pd.DataFrame(history.history)
-    df.to_csv(filename, index=False)
-
 # Train the model
 def train_model():
     # Load data from parser
@@ -70,11 +49,69 @@ def train_model():
     
     # Save the training history to a CSV file
     save_training_history(history)
+
+    # Plotting results
+    plotResults(history)
     
     _, acc = model.evaluate(X_test, y_test, verbose=0)
     print('> %.3f' % (acc * 100.0))
 
     return model
+
+# Normalize 0-1 a single image
+def normalize(image, scale=255.0):
+    # Convert from integers to floats and normalize to range 0-1
+    return image.astype('float32') / scale
+
+# Normalize the entire training data
+def normalize_images(images_raw):
+    return images_raw.astype('float32') / 255.0
+
+# Function to interpret the one-hot encoded output
+def interpret_one_hot(one_hot, delta):
+    for index, value in enumerate(one_hot):
+        if abs(value - 1) < delta:
+            return index  # Return the index of the first element found
+    return -1  # Return -1 if no such element is found
+
+# Save training history for MATLAB
+def save_training_history(history, filename='training_history.csv'):
+    df = pd.DataFrame(history.history)
+    df.to_csv(filename, index=False)
+    return df
+
+# This is a helper funtion to visualize the history metrics against epochs
+def plotResults(history):
+    # Fetch metrics
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    accuracy = history.history['accuracy']
+    val_accuracy = history.history['val_accuracy']
+    epochs = range(1, len(loss) + 1)
+    plt.figure(figsize=(12, 6))
+
+    # Subplot is used to plot the results together
+    # Here, we plotting Training Loss in plot 1
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, loss, 'b-', label='Training Loss')
+    plt.plot(epochs, val_loss, 'r-', label='Validation Loss')
+    plt.title('Loss over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    # Here, we plotting Training Accuracy in plot 2
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, accuracy, 'b-', label='Training Accuracy')
+    plt.plot(epochs, val_accuracy, 'r-', label='Validation Accuracy')
+    plt.title('Accuracy over Epochs')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.legend()
+
+    # For adjusting padding between and around the plots
+    plt.tight_layout()
+    plt.show()
 
 # Call the function to train the model
 model = train_model()
